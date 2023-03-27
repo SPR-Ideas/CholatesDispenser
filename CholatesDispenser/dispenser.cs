@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,7 +9,6 @@ namespace CholatesDispenser
 {
     public class dispenser
     {
-
         //int red , green , blue ,sliver ,crimson ,purpule , pink;
         public Dictionary<string, int> choclates = new Dictionary<string, int>();
         public dispenser(int count) {
@@ -19,7 +19,6 @@ namespace CholatesDispenser
             choclates["crimson"] = count;
             choclates["purpule"] = count;
             choclates["pink"] = count;
-
         }
 
         public void addCholates(string color, int count)
@@ -29,11 +28,12 @@ namespace CholatesDispenser
 
         public Dictionary<string, int> removeCholates(int count)
         {
-            //char[] cholates = new char[count * 7];
-            foreach (KeyValuePair<string, int> kp in choclates) {
+            Dictionary<string, int> result  = new Dictionary<string, int>();
+            foreach (KeyValuePair<string, int> kp in choclates)
+            {
                 choclates[kp.Key] = kp.Value - count;
-            }
-
+                result[kp.Key] = (choclates[kp.Key] > count ? count : kp.Value);
+            }  
             return choclates;
         }
 
@@ -98,13 +98,28 @@ namespace CholatesDispenser
             choclates[color] = 0;
             choclates[finalColor] += count;
         }
-    
 
-    
+        public void freshPick(string color, int count) {
+            choclates[color] -= (choclates[color] > count ? count: choclates[color] );
+            Console.WriteLine($"the chocolate {color} --> {(choclates[color] > count ? count : choclates[color])} has been dispensed.");
+        }
+
+        public Dictionary<string , int> dispenseRainbowChocolates(int count) {
+            Dictionary<string ,int> result = new Dictionary<string ,int>();
+
+            while (count > 0)
+            {
+                foreach (KeyValuePair<string, int> i in choclates.OrderBy(x => x.Value))
+                {
+                    choclates[i.Key] -= (choclates[i.Key] > 3 ? 3 : choclates[i.Key]);
+                    result[i.Key] += (choclates[i.Key] > 3 ? 3 : choclates[i.Key]);
+                    count -= (choclates[i.Key] > 3 ? 3 : choclates[i.Key]);
+                }
+                if (count == 0) break;
+            }
+
+            return result;
+        }
+
     }
-
-
-
-
-
 }
